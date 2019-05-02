@@ -158,10 +158,11 @@ cor(Dados$IDHM, Dados$MAT_DOC, method = c("pearson"))
 #R: -0.5057435
 
 
-# Salvando base de dados----
+# Salvando base de dados em RData e CSV----
 
 getwd()
 save(Matriculas_docentes_IDHM, file = "CENSO_PNUD_2016_MATRICULAS_DOCENTES.RData")
+
 write.csv2(Matriculas_docentes_IDHM, file = "CENSO_PNUD_2016_MATRICULAS_DOCENTES.csv",
            row.names = F)
 
