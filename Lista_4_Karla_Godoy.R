@@ -38,6 +38,7 @@ load("matricula_pe_censo_escolar_2016.Rdata")
 # Dados PNUD----
 
 Dados_PNUD <- read_excel("atlas2013_dadosbrutos_pt.xlsx", sheet = 1)
+
 head(Dados_PNUD)
 
 # selecionando dados de 2010 e do Estado de Pernambuco
@@ -50,7 +51,7 @@ IDHM_MUN <- pnud_pe_2010 %>% group_by(Município) %>%
 
 # Dados Docentes---- 
 
-Docentes_pe_mun_idade <- docentes_pe%>% filter(NU_IDADE < 70, NU_IDADE > 18)
+Docentes_pe_mun_idade <- docentes_pe%>% filter(NU_IDADE <=70, 18<= NU_IDADE) 
 
 Docentes_muni_PE <- Docentes_pe_mun_idade %>% group_by(CO_MUNICIPIO) %>%
   summarise(n_docentes = n())
@@ -59,10 +60,13 @@ Docentes_muni_PE <- Docentes_pe_mun_idade %>% group_by(CO_MUNICIPIO) %>%
 
 dim(Docentes_muni_PE)
 
+summary(Docentes_muni_PE)
 
 # Dados Matriculas----
 
-matriculas_pe_idade <- matricula_pe %>% filter(NU_IDADE < 25, NU_IDADE > 1)
+matriculas_pe_idade <- matricula_pe %>% filter(NU_IDADE <= 25, 1<=NU_IDADE)
+
+summary(matriculas_pe_idade)
 
 matriculas_PE_mun_idade <- matriculas_pe_idade %>% group_by(CO_MUNICIPIO) %>%
   summarise(n_matriculas = n())
@@ -108,11 +112,11 @@ names(pnud_pe_matriculas_docentes_final)
 
 #Base de dados para Correlação---- 
 
-Matriculas_docentes_IDHM <- pnud_pe_matriculas_docentes_final%>% select (Município,n_docentes.x,n_matriculas, IDHM)
+Matriculas_docentes_IDHM <- pnud_pe_matriculas_docentes_final%>% select (Município,n_docentes,n_matriculas, IDHM)
 
 # Nova Variavel- Matriculas por Docentes 
 
-Matriculas_docentes_IDHM <-Matriculas_docentes_IDHM  %>% mutate(MAT_DOC = n_matriculas / n_docentes.x)  
+Matriculas_docentes_IDHM <-Matriculas_docentes_IDHM  %>% mutate(MAT_DOC = n_matriculas /n_docentes)%>% arrange(desc(MAT_DOC))                                                              
 
 dim(Matriculas_docentes_IDHM)
 
@@ -127,19 +131,22 @@ str(Matriculas_docentes_IDHM)
 
 summary(Matriculas_docentes_IDHM)
 
-#  MAT_DOC     
-# Min.   :4.279  
-# 1st Qu.:5.452  
-# Median :5.912  
-# Mean   :6.023  
-# 3rd Qu.:6.573  
-# Max.   :9.540 
-
+#    MAT_DOC     
+# Min.   :4.431  
+# 1st Qu.:5.464  
+# Median :5.945  
+# Mean   :6.043  
+# 3rd Qu.:6.584  
+# Max.   :9.557 
 
 
 # Apresente o município com maior número de alunos por docente e seu IDHM----
 
-TUPANATINGA
+summary(Matriculas_docentes_IDHM)
+
+head(Matriculas_docentes_IDHM)
+
+# R: TUPANATINGA
 
 
 # Faça o teste do coeficiente de correlação linear de pearson e apresente sua resposta----
@@ -148,7 +155,7 @@ Dados<- Matriculas_docentes_IDHM
 
 cor(Dados$IDHM, Dados$MAT_DOC, method = c("pearson"))
 
-#R: -0.5119624
+#R: -0.5057435
 
 
 # Salvando base de dados----
@@ -165,7 +172,11 @@ write.csv2(Matriculas_docentes_IDHM, file = "CENSO_PNUD_2016_MATRICULAS_DOCENTES
 #Usando o pacote ggplot2, apresente o gráfico de dispersão entre as duas variáveis (número de alunos
 #por docente e IDHM)
 
-plot(Dados$MAT_DOC, Dados$IDHM)
+require(ggplot2)
+
+ggplot(data = Matriculas_docentes_IDHM, aes(x =MAT_DOC, y = IDHM) ) + 
+  geom_point(color = "red", size = 2) +
+  labs(x = "Número de Matrículas", y = "IDHM")
 
 
 
