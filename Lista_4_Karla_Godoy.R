@@ -168,7 +168,9 @@ write.csv2(Matriculas_docentes_IDHM, file = "CENSO_PNUD_2016_MATRICULAS_DOCENTES
 
 
 
-# Gráfico----
+# Exercício 3---- 
+
+# Gráfico
 
 #Usando o pacote ggplot2, apresente o gráfico de dispersão entre as duas variáveis (número de alunos
 #por docente e IDHM)
@@ -177,7 +179,7 @@ require(ggplot2)
 
 ggplot(data = Matriculas_docentes_IDHM, aes(x =MAT_DOC, y = IDHM) ) + 
   geom_point(color = "red", size = 2) +
-  labs(x = "Número de Matrículas", y = "IDHM")
+  labs(x = "Número de Matrículas por Docente", y = "IDHM")
 
 
 
